@@ -5,10 +5,10 @@ import bcryptjs from 'bcrypt'
 
 export const signup = async (req,res, next) => {
 
-    const {username, email, password,repeatpassword} = req.body;
+    const {username, email, password,repeat_password} = req.body;
 
 
-    if(repeatpassword != password){
+    if(repeat_password != password){
         res.status(203).json("Passwords do not match")
     }
 

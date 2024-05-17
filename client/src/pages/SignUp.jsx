@@ -1,13 +1,18 @@
 import React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState} from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import toast from 'react-hot-toast';
 
 
 
 
 function Signup() {
   const [formData, setFormData] = useState({})
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
    
   const handleChange = (e) => {
     setFormData({
@@ -18,6 +23,9 @@ function Signup() {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+
+    try {
+      setLoading(true);
     const res = await fetch('http://localhost:3000/api/user/signup', {
       method: 'POST',
       headers: {
@@ -25,7 +33,24 @@ function Signup() {
       },
       body: JSON.stringify(formData),
     });
+    const data = await res.json();
+    if (data.success === false){
+      setError(data.message);
+      setLoading(false);
+      return;
+    }
+    setLoading(false)
+    setError(null)
+    navigate('/signin')
+    toast.success("User Created Successfully")
+    } catch (error) {
+      setLoading(false)
+      toast.error("error")
+      setError(error.message)
+    }
 
+
+    
 
     
   }
@@ -127,10 +152,11 @@ function Signup() {
 
             <div>
               <button
+                disabled={loading}
                 type="submit"
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-default-red hover:bg-default-hover-red focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-default-red"
               >
-                Sign up
+                {loading ? 'Loading...' : 'Sign Up'}
               </button>
             </div>
           </form>

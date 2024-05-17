@@ -5,11 +5,13 @@ import Signin from './pages/SignIn'
 import Profile from './pages/Profile'
 import About from './pages/About'
 import Navbar from './components/Navbar'
-
+import {Toaster} from 'react-hot-toast'
 
 const App = () => {
   return (
+    
     <BrowserRouter>
+    <Toaster position ='bottom-right' toastOptions={{duration: 2000}} />
     <Navbar />
       <Routes>
         <Route path='/' element = {<Home />} />
