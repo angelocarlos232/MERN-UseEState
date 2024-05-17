@@ -19,7 +19,7 @@ const Navbar = () => {
          type='text' placeholder='Search...' />
          <SearchIcon />
       </form>
-      <ul>
+      <ul className='flex gap-4'>
       <Link to='/'><li className="hidden sm:inline text-default-brown hover:text-default-red hover:border-b-2 hover:border-default-red">Home</li></Link>
       <Link to='/about'><li className="hidden sm:inline text-default-brown hover:text-default-red hover:border-b-2 hover:border-default-red">About</li></Link>
       <Link to='/signin'><li className=" sm:inline text-default-brown hover:text-default-red hover:border-b-2 hover:border-default-red">Sign In</li></Link>   
