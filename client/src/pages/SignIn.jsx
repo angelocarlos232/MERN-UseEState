@@ -2,13 +2,14 @@ import React from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice'
 
 function SignIn() {
   const [formData, setFormData] = useState({})
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const {loading, error} = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
    
   const handleChange = (e) => {
@@ -22,7 +23,7 @@ function SignIn() {
     e.preventDefault();
 
     try {
-      setLoading(true);
+      dispatch(signInStart())
       const res = await fetch('http://localhost:3000/api/user/signin', {
           method: 'POST',
           headers: {
@@ -46,19 +47,16 @@ function SignIn() {
               setError(data.message || 'An error occurred');
               toast.error(data.message || 'An error occurred');
           }
-          setLoading(false);
+          dispatch(signInFailure(data.message));
           return;
       }
 
-      setLoading(false);
-      setError(null);
+      dispatch(signInSuccess(data))
       navigate('/');
       toast.success('Successfully logged in');
       
   } catch (error) {
-      setLoading(false);
-      toast.error('An error occurred');
-      setError(error.message);
+      dispatch(signInFailure(error.message));
   }
 };
     
