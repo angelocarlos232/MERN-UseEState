@@ -1,7 +1,67 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
+import toast from 'react-hot-toast'
+import { useState } from 'react'
 
-const SignIn = () => {
+
+function SignIn() {
+  const [formData, setFormData] = useState({})
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+   
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    })
+  }
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const res = await fetch('http://localhost:3000/api/user/signin', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+          credentials: 'include',
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+          // Handle error responses based on status code
+          if (res.status === 404) {
+              setError('User not found');
+              toast.error('User not found');
+          } else if (res.status === 401) {
+              setError('Wrong email or password');
+              toast.error('Wrong email or password');
+          } else {
+              setError(data.message || 'An error occurred');
+              toast.error(data.message || 'An error occurred');
+          }
+          setLoading(false);
+          return;
+      }
+
+      setLoading(false);
+      setError(null);
+      navigate('/');
+      toast.success('Successfully logged in');
+      
+  } catch (error) {
+      setLoading(false);
+      toast.error('An error occurred');
+      setError(error.message);
+  }
+};
+    
   return (
     <>
     <div className="min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -11,9 +71,9 @@ const SignIn = () => {
     </h2>
     <p className="mt-2 text-center text-sm text-gray-600 max-w">
       Or &nbsp;
-      <Link to='/signup'><a className="font-medium text-default-red hover:text-default-hover-red">
+      <Link to='/signup' className="font-medium text-default-red hover:text-default-hover-red">
         create an account
-      </a></Link>
+      </Link>
     </p>
   </div>
 
@@ -23,7 +83,7 @@ const SignIn = () => {
 
 
       
-      <form className="space-y-6">
+      <form className="space-y-6" onSubmit={handleSubmit}> 
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">
             Email address
@@ -32,6 +92,7 @@ const SignIn = () => {
             <input
               id="email"
               name="email"
+              onChange={handleChange}
               type="email"
               autoComplete="email"
               required
@@ -49,6 +110,7 @@ const SignIn = () => {
             <input
               id="password"
               name="password"
+              onChange={handleChange}
               type="password"
               autoComplete="current-password"
               required
@@ -72,9 +134,7 @@ const SignIn = () => {
           </div>
 
           <div className="text-sm">
-            <a href="#" className="font-medium text-default-red hover:text-default-hover-red">
               Forgot your password?
-            </a>
           </div>
         </div>
 
@@ -101,28 +161,17 @@ const SignIn = () => {
 
         <div className="mt-6 grid grid-cols-3 gap-3">
           <div>
-            <a
-              href="#"
-              className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            >
               <img className="h-5 w-5" src="https://www.svgrepo.com/show/512120/facebook-176.svg" alt="" />
-            </a>
           </div>
           <div>
-            <a
-              href="#"
-              className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            >
+           
               <img className="h-5 w-5" src="https://www.svgrepo.com/show/513008/twitter-154.svg" alt="" />
-            </a>
+            
           </div>
           <div>
-            <a
-              href="#"
-              className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            >
+            
               <img className="h-6 w-6" src="https://www.svgrepo.com/show/506498/google.svg" alt="" />
-            </a>
+
           </div>
         </div>
       </div>

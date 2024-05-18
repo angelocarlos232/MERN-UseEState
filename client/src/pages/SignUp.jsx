@@ -45,7 +45,7 @@ function Signup() {
     toast.success("User Created Successfully")
     } catch (error) {
       setLoading(false)
-      toast.error("error")
+      toast.error()
       setError(error.message)
     }
 
@@ -64,10 +64,8 @@ function Signup() {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600 max-w">
           Or &nbsp;
-          <Link to="/signin">
-            <a className="fonthandleChange-medium text-default-red hover:text-red-500">
+          <Link to="/signin" className="fonthandleChange-medium text-default-red hover:text-red-500">
               sign in to your account
-            </a>
           </Link>
         </p>
       </div>
